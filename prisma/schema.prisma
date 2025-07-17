@@ -1,0 +1,61 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int      @id @default(autoincrement())
+  title       String
+  price       String
+  image       String
+  description String
+  categoryId  Int      @map("category_id")
+  colorId     Int      @map("color_id")
+  highlight   Boolean
+  discount    Decimal?
+  rating      Decimal?
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  color    Color    @relation(fields: [colorId], references: [id])
+  category Category @relation(fields: [categoryId], references: [id])
+
+  @@map("products")
+}
+
+enum StockStatus {
+  AVAILABLE
+  UNAVAILABLE
+  RESTOCKING
+}
+
+model Stock {
+  id        Int         @id @default(autoincrement())
+  productId Int         @map("product_id")
+  status    StockStatus
+  quantity  Int
+
+  @@map("stocks")
+}
+
+model Category {
+  id      Int       @id @default(autoincrement())
+  title   String
+  Product Product[]
+
+  @@map("categories")
+}
+
+model Color {
+  id      Int       @id @default(autoincrement())
+  title   String
+  Product Product[]
+
+  @@map("colors")
+}
