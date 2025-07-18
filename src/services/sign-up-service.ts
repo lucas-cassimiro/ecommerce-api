@@ -1,6 +1,6 @@
-import { PrismaClient, Role, User } from '../generated/prisma'
+import { Encrypter } from '../domain/criptography/encrypter'
+import { Role, User } from '../generated/prisma'
 import { UsersRepository } from '../repositories/users-repository'
-import bcrypt from 'bcryptjs'
 
 interface SignUpServiceRequest {
     firstName: string
@@ -17,7 +17,10 @@ interface SignUpServiceResponse {
 }
 
 export class SignUpService {
-    constructor(private readonly usersRepository: UsersRepository) { }
+    constructor(
+        private readonly usersRepository: UsersRepository,
+        private readonly encrypter: Encrypter,
+    ) { }
 
     async execute({
         firstName,
@@ -34,7 +37,7 @@ export class SignUpService {
             throw new Error('User already exists.')
         }
 
-        const passwordHash = await bcrypt.hash(password, 10)
+        const passwordHash = await this.encrypter.encrypt(password)
 
         const user = await this.usersRepository.create({
             firstName,
