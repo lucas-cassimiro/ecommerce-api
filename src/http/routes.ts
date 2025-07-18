@@ -1,6 +1,13 @@
 import { FastifyInstance } from 'fastify'
 
-import { makeAuthenticateController, makeCreateProductController, makeGetProductsController, makeSignUpController, makeGetProductIdController } from '../factories'
+import {
+    makeAuthenticateController,
+    makeCreateProductController,
+    makeGetProductsController,
+    makeSignUpController,
+    makeGetProductIdController,
+    makeGetUserProfileController
+} from '../factories'
 
 export async function appRoutes(app: FastifyInstance) {
     const controller = makeCreateProductController()
@@ -8,10 +15,14 @@ export async function appRoutes(app: FastifyInstance) {
     const authenticateController = makeAuthenticateController()
     const getProductsController = makeGetProductsController()
     const getProductIdController = makeGetProductIdController()
+    const getUserProfileController = makeGetUserProfileController()
 
     app.get('/products', (req, reply) => getProductsController.handle(req, reply))
     app.get('/products/:productId', (req, reply) => getProductIdController.handle(req, reply))
     app.post('/products', (req, reply) => controller.handle(req, reply))
+
+    app.get('/users/:userId', (req, reply) => getUserProfileController.handle(req, reply))
     app.post('/users', (req, reply) => signUpController.handle(req, reply))
+
     app.post('/sessions', (req, reply) => authenticateController.handle(req, reply))
 }
