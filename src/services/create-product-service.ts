@@ -42,9 +42,9 @@ export class CreateProductService {
         quantity,
         status,
     }: CreateProductServiceRequest): Promise<CreateProductServiceResponse> {
-        const productAlreadyExists = await this.productsRepository.findByEan(ean)
+        const productWithSameEan = await this.productsRepository.findByEan(ean)
 
-        if (productAlreadyExists) {
+        if (productWithSameEan) {
             throw new Error('Product already exists.')
         }
 

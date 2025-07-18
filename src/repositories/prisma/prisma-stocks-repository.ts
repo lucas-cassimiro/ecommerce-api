@@ -17,7 +17,9 @@ export class PrismaStocksRepository implements StocksRepository {
     async create(data: Prisma.StockUncheckedCreateInput, tx?: Prisma.TransactionClient): Promise<Stock> {
         const { productId, purchasePrice, quantity, status } = data
 
-        const newStock = await this.prisma.stock.create({
+        const prisma = tx ?? this.prisma
+
+        const newStock = await prisma.stock.create({
             data: {
                 productId,
                 purchasePrice,
