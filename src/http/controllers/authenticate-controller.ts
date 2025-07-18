@@ -13,20 +13,20 @@ export class AuthenticateController {
 
     async handle(request: FastifyRequest, response: FastifyReply) {
         try {
-            const {
-                email,
-                password,
-            } = authenticateBodySchema.parse(request.body)
+            const { email, password } = authenticateBodySchema.parse(request.body)
 
-            const { user } = await this.authenticateService.execute({
+            const { user, token } = await this.authenticateService.execute({
                 email,
                 password
             })
 
-            return response.status(201).send({ message: 'Usuário cadastrado', user })
+            return response.status(201).send({
+                user,
+                token
+            })
         } catch (err) {
             console.error(err)
-            return response.status(400).send({ message: 'Erro ao cadastrar usuário', error: err })
+            return response.status(400).send({ message: 'Erro ao autenticar usuário', error: err })
         }
     }
 }
