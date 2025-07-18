@@ -2,6 +2,7 @@ import { UsersRepository } from '../repositories/users-repository'
 import { User } from '../generated/prisma'
 import { TokenGenerator } from '../domain/protocols/token-generator'
 import { HashComparer } from '../domain/criptography/hash-comparer'
+import jwt from 'jsonwebtoken'
 
 interface AuthenticateRequest {
     email: string
