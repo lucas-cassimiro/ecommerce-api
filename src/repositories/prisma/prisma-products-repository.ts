@@ -24,8 +24,10 @@ export class PrismaProductsRepository implements ProductsRepository {
         return product
     }
 
-    async create(data: Prisma.ProductUncheckedCreateInput): Promise<Product> {
-        const product = await this.prisma.product.create({
+    async create(data: Prisma.ProductUncheckedCreateInput, tx?: Prisma.TransactionClient): Promise<Product> {
+        const prisma = tx ?? this.prisma
+
+        const product = await prisma.product.create({
             data
         })
 
