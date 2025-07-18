@@ -21,6 +21,7 @@ model Product {
   rating      Decimal?
   ean         String   @unique
 
+  createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   color    Color    @relation(fields: [colorId], references: [id])
@@ -72,13 +73,13 @@ enum Role {
 }
 
 model User {
-  id           Int      @id @default(autoincrement())
-  firstName    String   @map("first_name")
-  lastName     String   @map("last_name")
-  email        String   @unique
-  passwordHash String   @map("password_hash")
+  id           Int    @id @default(autoincrement())
+  firstName    String @map("first_name")
+  lastName     String @map("last_name")
+  email        String @unique
+  passwordHash String @map("password_hash")
   cellphone    String
-  cpf          String   @unique
+  cpf          String @unique
   role         Role
 
   createdAt DateTime @default(now()) @map("created_at")
