@@ -1,4 +1,5 @@
 import { Encrypter } from '../domain/criptography/encrypter'
+import { Hasher } from '../domain/criptography/hasher'
 import { Role, User } from '../generated/prisma'
 import { UsersRepository } from '../repositories/users-repository'
 
@@ -19,7 +20,7 @@ interface SignUpServiceResponse {
 export class SignUpService {
     constructor(
         private readonly usersRepository: UsersRepository,
-        private readonly encrypter: Encrypter,
+        private readonly hasher: Hasher,
     ) { }
 
     async execute({
@@ -37,7 +38,7 @@ export class SignUpService {
             throw new Error('User already exists.')
         }
 
-        const passwordHash = await this.encrypter.encrypt(password)
+        const passwordHash = await this.hasher.hash(password)
 
         const user = await this.usersRepository.create({
             firstName,
