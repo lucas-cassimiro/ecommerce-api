@@ -1,15 +1,28 @@
 import jwt from 'jsonwebtoken'
-import { TokenGenerator } from '../../domain/protocols/token-generator'
 
-export class JwtAdapter implements TokenGenerator {
+import { Encrypter } from '../../domain/criptography/encrypter'
+import { Decrypter } from '../../domain/criptography/decrypter'
+
+export class JwtAdapter implements Encrypter, Decrypter {
     constructor(
-        private readonly secret: jwt.Secret,
-        private readonly expiresIn: jwt.SignOptions['expiresIn']
+        private readonly secret: string,
+        private readonly expiresInAccessToken: jwt.SignOptions['expiresIn'],
+        private readonly expiresInRefreshToken: jwt.SignOptions['expiresIn']
     ) { }
 
-    async generate(payload: object): Promise<string> {
-        const token = jwt.sign(payload, this.secret, { expiresIn: this.expiresIn })
+    async generateAccessToken(payload: object): Promise<string> {
+        const token = jwt.sign(payload, this.secret, { expiresIn: this.expiresInAccessToken })
 
         return token
+    }
+
+    async generateRefreshToken(payload: object): Promise<string> {
+        const token = jwt.sign(payload, this.secret, { expiresIn: this.expiresInRefreshToken })
+
+        return token
+    }
+
+    async decrypt(token: string): Promise<string> {
+        return jwt.verify(token, this.secret) as any
     }
 }
