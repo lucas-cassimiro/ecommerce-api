@@ -1,3 +1,4 @@
 export interface Encrypter {
-    encrypt(value: string): Promise<string>
+    generateAccessToken(payload: object): Promise<string>
+    generateRefreshToken(payload: object): Promise<string>
 }

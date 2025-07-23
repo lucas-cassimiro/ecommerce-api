@@ -8,7 +8,7 @@ import { AuthenticateController } from '../http/controllers/authenticate-control
 export const makeAuthenticateController = () => {
     const salt = 12
     const bcryptAdapter = new BcryptAdapter(salt)
-    const jwtAdapter = new JwtAdapter('mysecretkey', '1h')
+    const jwtAdapter = new JwtAdapter('mysecretkey', '1h', '7d')
     const usersRepository = new PrismaUsersRepository(prisma)
     const authenticateService = new AuthenticateService(usersRepository, bcryptAdapter, jwtAdapter)
     const authenticateController = new AuthenticateController(authenticateService)

@@ -1,3 +1,4 @@
 export interface TokenGenerator {
-    generate(payload: object): Promise<string>
+    generateAccessToken(payload: object): Promise<string>
+    generateRefreshToken(payload: object): Promise<string>
 }

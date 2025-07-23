@@ -1,0 +1,12 @@
+### Login
+POST http://localhost:3333/sessions
+Content-Type: application/json
+
+{
+  "email": "lucascassimiro545@gmail.com",
+  "password": "123456"
+}
+
+### Refresh token
+PATCH http://localhost:3333/token/refresh
+Include-Cookies: true
