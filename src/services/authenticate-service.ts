@@ -2,7 +2,6 @@ import { UsersRepository } from '../repositories/users-repository'
 import { User } from '../generated/prisma'
 import { TokenGenerator } from '../domain/protocols/token-generator'
 import { HashComparer } from '../domain/criptography/hash-comparer'
-import jwt from 'jsonwebtoken'
 
 interface AuthenticateRequest {
     email: string
@@ -11,7 +10,8 @@ interface AuthenticateRequest {
 
 interface AuthenticateResponse {
     user: User
-    token: string
+    accessToken: string
+    refreshToken: string
 }
 
 export class AuthenticateService {
@@ -37,11 +37,18 @@ export class AuthenticateService {
             throw new Error()
         }
 
-        const token = await this.tokenGenerator.generate({ id: user.id, email: user.email })
+        const userData = {
+            id: user.id,
+            email: user.email
+        }
+
+        const accessToken = await this.tokenGenerator.generateAccessToken(userData)
+        const refreshToken = await this.tokenGenerator.generateRefreshToken(userData)
 
         return {
             user,
-            token
+            accessToken,
+            refreshToken
         }
     }
 }
