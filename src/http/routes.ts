@@ -10,6 +10,7 @@ import {
 } from '../factories'
 import { authMiddleware } from './middlewares/auth'
 import { makeRefreshTokenController } from '../factories/make-refresh-token-controller'
+import { uploadMiddleware } from './middlewares/upload'
 
 export async function appRoutes(app: FastifyInstance) {
     const controller = makeCreateProductController()
@@ -22,7 +23,7 @@ export async function appRoutes(app: FastifyInstance) {
 
     app.get('/products', (req, reply) => getProductsController.handle(req, reply))
     app.get('/products/:productId', (req, reply) => getProductIdController.handle(req, reply))
-    app.post('/products', (req, reply) => controller.handle(req, reply))
+    app.post('/products', { preHandler: [uploadMiddleware] }, (req, reply) => controller.handle(req, reply))
 
     app.post('/users', (req, reply) => signUpController.handle(req, reply))
     app.post('/sessions', (req, reply) => authenticateController.handle(req, reply))

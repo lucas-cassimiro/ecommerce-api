@@ -1,5 +1,6 @@
 import { FastifyRequest, FastifyReply } from 'fastify'
 import { z } from 'zod'
+import { MultipartFile } from '@fastify/multipart'
 
 import { StockStatus } from '../../generated/prisma'
 import { CreateProductService } from '../../services/create-product-service'
@@ -10,7 +11,7 @@ const createProductBodySchema = z.object({
     description: z.string(),
     categoryId: z.coerce.number(),
     colorId: z.coerce.number(),
-    highlight: z.boolean(),
+    highlight: z.coerce.boolean(),
     discount: z.coerce.number().optional(),
     ean: z.string(),
     purchasePrice: z.coerce.number(),
@@ -23,35 +24,20 @@ export class CreateProductController {
 
     async handle(request: FastifyRequest, response: FastifyReply) {
         try {
-            const {
-                name,
-                price,
-                description,
-                categoryId,
-                colorId,
-                highlight,
-                discount,
-                ean,
-                purchasePrice,
-                quantity,
-                status
-            } = createProductBodySchema.parse(request.body)
+            const productParsed = createProductBodySchema.parse(request.body)
+            const file = request.upload?.file as MultipartFile | undefined
 
-            const image = 'foo'
+            if (!file) {
+                return response.status(400).send({ error: 'Image file is required.' })
+            }
+
+            const { buffer, fileName, mimetype } = request.upload!.file
 
             const { product } = await this.createProductService.execute({
-                name,
-                price,
-                image,
-                description,
-                categoryId,
-                colorId,
-                highlight,
-                discount,
-                ean,
-                purchasePrice,
-                quantity,
-                status
+                ...productParsed,
+                buffer,
+                fileName,
+                mimetype
             })
 
             return response.status(201).send({ message: 'Product created successfully.', product })

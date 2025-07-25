@@ -1,3 +1,4 @@
+import { Storage } from '../domain/protocols/storage'
 import { PrismaClient, Product, StockStatus } from '../generated/prisma'
 import { ProductsRepository } from '../repositories/products-repository'
 import { StocksRepository } from '../repositories/stocks-repository'
@@ -5,7 +6,9 @@ import { StocksRepository } from '../repositories/stocks-repository'
 interface CreateProductServiceRequest {
     name: string
     price: number
-    image: string
+    buffer: Buffer
+    fileName: string
+    mimetype: string
     description: string
     categoryId: number
     colorId: number
@@ -26,12 +29,15 @@ export class CreateProductService {
         private readonly productsRepository: ProductsRepository,
         private readonly stocksRepository: StocksRepository,
         private readonly prisma: PrismaClient,
+        private readonly storage: Storage
     ) { }
 
     async execute({
         name,
         price,
-        image,
+        buffer,
+        fileName,
+        mimetype,
         description,
         categoryId,
         colorId,
@@ -48,11 +54,21 @@ export class CreateProductService {
             throw new Error('Product already exists.')
         }
 
+        const imageUrl = await this.storage.upload({
+            buffer,
+            fileName,
+            mimetype
+        })
+
+        if (!imageUrl) {
+            throw new Error('Failed to upload product image.')
+        }
+
         const product = await this.prisma.$transaction(async (tx) => {
             const createdProduct = await this.productsRepository.create({
                 name,
                 price,
-                image,
+                image: imageUrl,
                 description,
                 categoryId,
                 colorId,
