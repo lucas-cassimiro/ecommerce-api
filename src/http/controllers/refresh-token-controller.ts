@@ -19,7 +19,7 @@ export class RefreshTokenController {
                 return response.status(401).send({ message: 'Refresh token is missing.' })
             }
 
-            const decoded = await this.jwtAdapter.decrypt(refreshToken) as unknown as JwtPayload
+            const decoded = await this.jwtAdapter.decrypt<JwtPayload>(refreshToken)
 
             if (!decoded) {
                 return response.status(401).send({ message: 'Refresh token invalid.' })
