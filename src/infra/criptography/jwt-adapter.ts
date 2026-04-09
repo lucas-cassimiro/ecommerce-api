@@ -6,7 +6,7 @@ export class JwtAdapter implements Encrypter, Decrypter {
   constructor(
     private readonly secret: string,
     private readonly expiresInAccessToken: jwt.SignOptions['expiresIn'],
-    private readonly expiresInRefreshToken: jwt.SignOptions['expiresIn']
+    private readonly expiresInRefreshToken: jwt.SignOptions['expiresIn'],
   ) {}
 
   async generateAccessToken(payload: object): Promise<string> {
