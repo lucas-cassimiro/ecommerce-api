@@ -163,8 +163,8 @@ Durante o desenvolvimento foram aplicados conceitos avançados como:
 👨‍💻 Autor
 
 Lucas Cassimiro
-- LinkedIn: https://linkedin.com/in/seu-link
-- GitHub: https://github.com/seu-user
+- LinkedIn: [https://linkedin.com/in/seu-link](https://www.linkedin.com/in/lucasocassimiro/)
+- GitHub: [https://github.com/seu-user](https://github.com/lucas-cassimiro)
 
 ⚠️ Observação
 
