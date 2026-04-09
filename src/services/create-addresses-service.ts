@@ -1,46 +1,44 @@
-import { Address, Prisma, PrismaClient } from "../generated/prisma";
-import { AddressesRepository } from "../repositories/addresses-repository";
+import { Address } from '../generated/prisma'
+import { AddressesRepository } from '@/infra/db/prisma/repositories/addresses-repository'
 
 interface CreateAddressServiceRequest {
-    userId: number
-    street: string
-    number: number
-    neighborhood: string
-    cityId: number
-    recipient: string
-    cep: string
+  userId: number
+  street: string
+  number: number
+  neighborhood: string
+  cityId: number
+  recipient: string
+  cep: string
 }
 
 interface CreateAddressServiceResponse {
-    address: Address
+  address: Address
 }
 
 export class CreateAddressesService {
-    constructor(
-        private readonly addressesRepository: AddressesRepository,
-    ) { }
+  constructor(private readonly addressesRepository: AddressesRepository) {}
 
-    async execute({
-        userId,
-        street,
-        number,
-        neighborhood,
-        cityId,
-        recipient,
-        cep
-    }: CreateAddressServiceRequest): Promise<CreateAddressServiceResponse> {
-        const address = await this.addressesRepository.create({
-            userId,
-            street,
-            number,
-            neighborhood,
-            cityId,
-            recipient,
-            cep
-        })
+  async execute({
+    userId,
+    street,
+    number,
+    neighborhood,
+    cityId,
+    recipient,
+    cep,
+  }: CreateAddressServiceRequest): Promise<CreateAddressServiceResponse> {
+    const address = await this.addressesRepository.create({
+      userId,
+      street,
+      number,
+      neighborhood,
+      cityId,
+      recipient,
+      cep,
+    })
 
-        return {
-            address
-        }
+    return {
+      address,
     }
+  }
 }

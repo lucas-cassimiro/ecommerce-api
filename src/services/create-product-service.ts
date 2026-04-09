@@ -1,94 +1,100 @@
 import { Storage } from '../domain/protocols/storage'
 import { PrismaClient, Product, StockStatus } from '../generated/prisma'
-import { ProductsRepository } from '../repositories/products-repository'
-import { StocksRepository } from '../repositories/stocks-repository'
+import { ProductsRepository } from '@/infra/db/prisma/repositories/products-repository'
+import { StocksRepository } from '@/infra/db/prisma/repositories/stocks-repository'
 
 interface CreateProductServiceRequest {
-    name: string
-    price: number
-    buffer: Buffer
-    fileName: string
-    mimetype: string
-    description: string
-    categoryId: number
-    colorId: number
-    highlight: boolean
-    discount?: number
-    ean: string
-    purchasePrice: number
-    quantity: number
-    status: StockStatus
+  name: string
+  price: number
+  buffer: Buffer
+  fileName: string
+  mimetype: string
+  description: string
+  categoryId: number
+  colorId: number
+  highlight: boolean
+  discount?: number
+  ean: string
+  purchasePrice: number
+  quantity: number
+  status: StockStatus
 }
 
 interface CreateProductServiceResponse {
-    product: Product
+  product: Product
 }
 
 export class CreateProductService {
-    constructor(
-        private readonly productsRepository: ProductsRepository,
-        private readonly stocksRepository: StocksRepository,
-        private readonly prisma: PrismaClient,
-        private readonly storage: Storage
-    ) { }
+  constructor(
+    private readonly productsRepository: ProductsRepository,
+    private readonly stocksRepository: StocksRepository,
+    private readonly prisma: PrismaClient,
+    private readonly storage: Storage,
+  ) {}
 
-    async execute({
-        name,
-        price,
-        buffer,
-        fileName,
-        mimetype,
-        description,
-        categoryId,
-        colorId,
-        highlight,
-        discount,
-        ean,
-        purchasePrice,
-        quantity,
-        status,
-    }: CreateProductServiceRequest): Promise<CreateProductServiceResponse> {
-        const productWithSameEan = await this.productsRepository.findByEan(ean)
+  async execute({
+    name,
+    price,
+    buffer,
+    fileName,
+    mimetype,
+    description,
+    categoryId,
+    colorId,
+    highlight,
+    discount,
+    ean,
+    purchasePrice,
+    quantity,
+    status,
+  }: CreateProductServiceRequest): Promise<CreateProductServiceResponse> {
+    const productWithSameEan = await this.productsRepository.findByEan(ean)
 
-        if (productWithSameEan) {
-            throw new Error('Product already exists.')
-        }
-
-        const imageUrl = await this.storage.upload({
-            buffer,
-            fileName,
-            mimetype
-        })
-
-        if (!imageUrl) {
-            throw new Error('Failed to upload product image.')
-        }
-
-        const product = await this.prisma.$transaction(async (tx) => {
-            const createdProduct = await this.productsRepository.create({
-                name,
-                price,
-                image: imageUrl,
-                description,
-                categoryId,
-                colorId,
-                highlight,
-                discount,
-                ean,
-            }, tx)
-
-            await this.stocksRepository.create({
-                productId: createdProduct.id,
-                purchasePrice,
-                quantity,
-                status,
-            }, tx)
-
-            return createdProduct
-        })
-
-        return {
-            product,
-        }
+    if (productWithSameEan) {
+      throw new Error('Product already exists.')
     }
+
+    const imageUrl = await this.storage.upload({
+      buffer,
+      fileName,
+      mimetype,
+    })
+
+    if (!imageUrl) {
+      throw new Error('Failed to upload product image.')
+    }
+
+    const product = await this.prisma.$transaction(async (tx) => {
+      const createdProduct = await this.productsRepository.create(
+        {
+          name,
+          price,
+          image: imageUrl,
+          description,
+          categoryId,
+          colorId,
+          highlight,
+          discount,
+          ean,
+        },
+        tx,
+      )
+
+      await this.stocksRepository.create(
+        {
+          productId: createdProduct.id,
+          purchasePrice,
+          quantity,
+          status,
+        },
+        tx,
+      )
+
+      return createdProduct
+    })
+
+    return {
+      product,
+    }
+  }
 }

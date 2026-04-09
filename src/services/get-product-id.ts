@@ -1,26 +1,26 @@
-import { Product } from "../generated/prisma"
-import { ProductsRepository } from "../repositories/products-repository"
+import { Product } from '../generated/prisma'
+import { ProductsRepository } from '@/infra/db/prisma/repositories/products-repository'
 
 interface GetProductIdServiceRequest {
-    productId: number
+  productId: number
 }
 
 interface GetProductIdServiceResponse {
-    product: Product | null
+  product: Product | null
 }
 
 export class GetProductIdService {
-    constructor(private readonly productsRepository: ProductsRepository) { }
+  constructor(private readonly productsRepository: ProductsRepository) {}
 
-    async execute({ productId }: GetProductIdServiceRequest): Promise<GetProductIdServiceResponse> {
-        const product = await this.productsRepository.findById(productId)
+  async execute({ productId }: GetProductIdServiceRequest): Promise<GetProductIdServiceResponse> {
+    const product = await this.productsRepository.findById(productId)
 
-        if (!product) {
-            throw new Error('Product does not exists.')
-        }
-
-        return {
-            product
-        }
+    if (!product) {
+      throw new Error('Product does not exists.')
     }
+
+    return {
+      product,
+    }
+  }
 }
