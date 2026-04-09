@@ -171,12 +171,3 @@ Lucas Cassimiro
 Este projeto foi desenvolvido com fins educacionais e para demonstração de habilidades técnicas, simulando cenários reais de mercado.
 
 ---
-
-Se quiser deixar isso **nível absurdo mesmo (tipo dev pleno chamando recruiter)**, o próximo upgrade seria:
-
-- badges (build, coverage, etc.)
-- README em inglês
-- diagramas (arquitetura + fluxo Stripe)
-- GIF rodando
-
-Se quiser, eu monto a versão **nível “contrata esse cara agora”** pra você 😏
