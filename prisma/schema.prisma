@@ -91,6 +91,28 @@ model User {
   @@map("users")
 }
 
+model Customer {
+  id        Int    @id @default(autoincrement())
+  userId    Int    @map("user_id")
+  firstName String @map("first_name")
+  lastName  String @map("last_name")
+  cpf       String @unique
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  @@map("customers")
+}
+
+model Manager {
+  id         Int    @id @default(autoincrement())
+  userId     Int    @map("user_id")
+  employeeId Int    @map("employee_id")
+  department String
+
+  @@map("managers")
+}
+
 model Address {
   id           Int    @id @default(autoincrement())
   userId       Int    @unique @map("user_id")
