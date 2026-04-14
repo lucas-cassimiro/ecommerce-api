@@ -121,7 +121,7 @@ describe('CreateOrderUseCase', () => {
 
 🐳 Como rodar o projeto
 # Clonar repositório
-git clone https://github.com/seu-user/seu-repo
+git clone https://github.com/lucas-cassimiro/ecommerce-api
 
 # Instalar dependências
 yarn
