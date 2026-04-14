@@ -13,8 +13,6 @@ A aplicação simula um ambiente real de produção, incluindo:
 - Webhooks para eventos externos
 - Testes automatizados
 
-> O objetivo não é apenas “funcionar”, mas sim demonstrar **como sistemas reais devem ser construídos**.
-
 ---
 
 ## 🚀 Tecnologias
